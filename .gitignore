@@ -1,4 +1,5 @@
 NOTES.md
 QUESTIONS.md
 /backend/snapshots/*
-/backend/sample
+*/sample/*
+sample/*
