@@ -21,7 +21,7 @@ func Load() ServerConfigurations {
 	}
 	host := HostFileConfig{
 		MaxSize:  (25 << 20),
-		Location: "/Users/mommy/Documents/coding/interviews/2025censys/custom/backend/snapshots",
+		Location: "./backend/snapshots",
 	}
 
 	return ServerConfigurations{
