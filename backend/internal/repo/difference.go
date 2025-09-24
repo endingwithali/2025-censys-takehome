@@ -24,7 +24,6 @@ func (Differences) TableName() string {
 
 func InsertDifference(difference Differences) error {
 	// ctx := context.Background()
-	// TO DO: Handle duplicates being added to the db? What happens if duplicates are added with the same timestamps and host, but different json_data
 
 	// err := DB.WithContext(ctx).Where(
 	// 	"host_ip=? AND timestamp1=? AND timestamp2=?",

@@ -15,6 +15,17 @@ func NewDifferencesServicet() *DifferencesService {
 	return &DifferencesService{}
 }
 
+// GetDifferences
+//
+// Summary: Reads files from disk and compares them using github.com/nsf/jsondiff
+// Path Params:
+//   - file1path: string ()
+//   - t2: string (timestamp of file 2)
+//
+// Responses:
+//   - 200: ListSnapshotsResponse
+//   - 204: APIError (Snapshot not found in DB or on disk)
+//   - 500: API Error (Unable to create difference)
 func (service *DifferencesService) GetDifferences(file1Path string, file2Path string) (string, string, error) {
 	// Read both files
 	file1, err := os.ReadFile(file1Path)
@@ -32,3 +43,7 @@ func (service *DifferencesService) GetDifferences(file1Path string, file2Path st
 	return diff.String(), explanation, nil
 
 }
+
+// Missing Functionality:
+// - writing checked differences to db
+// - checking if difference already exists
