@@ -1,14 +1,5 @@
 # Censys Take Home 2025
 
-Backend:
-- Golang
-- Postgres
-
-Frontend:
-## System Overview
-
-This project uses the following technologies:
-
 ### Backend
 - **Language:** Go (Golang) 1.24+
 - **Frameworks/Libraries:** 
@@ -17,7 +8,6 @@ This project uses the following technologies:
   - [github.com/go-chi/cors](https://github.com/go-chi/cors) (CORS middleware)
   - [github.com/nsf/jsondiff](https://github.com/nsf/jsondiff) (difference finder)
 - **Database:** PostgreSQL
-- **Testing:** Go's built-in `testing` package
 
 ### Frontend
 - **Language:** JavaScript (React)
