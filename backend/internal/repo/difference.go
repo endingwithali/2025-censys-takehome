@@ -15,10 +15,8 @@ type Differences struct {
 	JSON_Data  json.RawMessage `json:"json_data"`
 }
 
-/*
-Explicitly telilng GORM the table name to use for snapshot differences
-*/
 func (Differences) TableName() string {
+	//Explicitly telilng GORM the table name to use for snapshot differences
 	return "snapshot_differences"
 }
 

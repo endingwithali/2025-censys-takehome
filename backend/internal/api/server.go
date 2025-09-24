@@ -6,6 +6,7 @@ import (
 
 	"github.com/endingwithali/2025censys/internal/service"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 )
 
 type Server struct {
@@ -22,10 +23,21 @@ func New(snapshotService *service.SnapshotService, differenceService *service.Di
 	}
 	router := chi.NewRouter()
 
+	// CORS middleware
+	router.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000", "http://127.0.0.1:3000"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}))
+
 	// Global fallbacks
 	router.NotFound(server.NotFound)
 	router.MethodNotAllowed(server.MethodNotAllowed)
 
+	// API Routes
 	router.Route("/api", func(r chi.Router) {
 		r.Get("/health", server.Get)
 		r.Get("/host/all", server.ListAllHosts)
@@ -37,6 +49,14 @@ func New(snapshotService *service.SnapshotService, differenceService *service.Di
 	return router
 }
 
+// Health Check
+// GET /api/health
+//
+// Summary: Check if the server is running.
+//
+// Responses:
+//   - 200: OK
+//   - 500: Internal Server Error
 func (server *Server) Get(w http.ResponseWriter, r *http.Request) {
 	log.Print("In Health Check")
 	w.WriteHeader(http.StatusOK)

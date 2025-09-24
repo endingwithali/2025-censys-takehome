@@ -6,6 +6,22 @@ import (
 	"net/http"
 )
 
+// ListAllHosts handles GET /api/host/all
+//
+// Summary: Get all possible hosts.
+//
+// Example:
+// GET /api/host/all
+//
+// Responses:
+//   - 200: ListSnapshotsResponse
+//   - 500: Internal Server Error (Unable to get list of hosts)
+//
+// Response Body:
+//
+//	{
+//	  [List of all possible hosts IPs as strings]
+//	}
 func (server *Server) ListAllHosts(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	hosts, err := server.snapshotService.GetAllHosts(ctx)

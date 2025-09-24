@@ -10,8 +10,26 @@ import (
 	"regexp"
 )
 
-// Expecting URL enconded timestamp
+// GetSnapshotForHost handles GET /api/snapshot?host={host}&at={timestamp}
+//
+// Summary: Get snapshot at specific timestamp for a host.
+// Path Params:
+//   - host: string (IPv4/IPv6)
+//   - at: string (timestamp of file 1)
+//
+// Example:
 // GET /snapshots?host=125.199.235.74&at=2025-09-10T03:00:00Z
+//
+// Responses:
+//   - 200: ListSnapshotsResponse
+//   - 204: APIError (Snapshot not found in DB or on disk)
+//   - 500: API Error (Unable to create difference)
+//
+// Response Body:
+//
+//	{
+//		JSON string of contents of snapshot file
+//	}
 func (server *Server) GetSnapshotForHost(w http.ResponseWriter, r *http.Request) {
 	log.Println("GetSnapshotForHost: CALLED")
 
@@ -44,7 +62,25 @@ func (server *Server) GetSnapshotForHost(w http.ResponseWriter, r *http.Request)
 	log.Println("GetSnapshotForHost: SUCCESS")
 }
 
-// GET /snapshots?host=125.199.235.74
+// GetAllSnapshotsForHost handles GET /api/host?host={host}
+//
+// Summary: Get all timestamps of all snapshots available for a host.
+// Path Params:
+//   - host: string (IPv4/IPv6)
+//
+// Example:
+// GET /api/host?host=125.199.235.74
+//
+// Responses:
+//   - 200: ListSnapshotsResponse
+//   - 204: APIError (Snapshot not found in DB or on disk)
+//   - 500: API Error (Unable to create difference)
+//
+// Response Body:
+//
+//	{
+//	 	[List of all timestamps for the snapshots available for a host as strings]
+//	}
 func (server *Server) GetAllSnapshotsForHost(w http.ResponseWriter, r *http.Request) {
 	log.Println("GetAllSnapshotsForHost: CALLED")
 
@@ -70,6 +106,26 @@ func (server *Server) GetAllSnapshotsForHost(w http.ResponseWriter, r *http.Requ
 	log.Println("GetAllSnapshotsForHost: Success")
 }
 
+// CreateSnapshot handles Post /api/snapshot
+//
+// Summary: Create a snapshot for a host.
+// Body Params:
+//   - file: string (JSON String of body of snapshot file)
+//
+// Example:
+// POST /api/snapshot
+// Content-Type: multipart/form-data
+// Body:
+//
+//	{
+//		 	file: (File)
+//	}
+//
+// Responses:
+//   - 200: Success
+//   - 209: API Error (Snapshot failed to be created by DB)
+//   - 400: API Error (Invalid file format)
+//   - 500: Server Error (Unable to create snapshot)
 func (server *Server) CreateSnapshot(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log.Println("CreateSnapshot: CALLED")
@@ -101,6 +157,19 @@ func (server *Server) CreateSnapshot(w http.ResponseWriter, r *http.Request) {
 	log.Println("CreateSnapshot: SUCCESS")
 }
 
+// validateFileNameFormat validates the filename format to the expected format
+//
+// Summary: Validate the filename format
+// Expected Format:
+//
+//	host_<ip>_<YYYY-MM-DD>T<HH-MM-SS>[.fraction](Z|±HH-MM).json
+//	- Timestamp will be ISO 8601 format
+//
+// Example:
+// validateFileNameFormat("host_125.199.235.74_2025-09-10T03-00-00.json")
+//
+// Returns:
+//   - bool: true if the filename format is valid, false otherwise
 func (server *Server) validateFileNameFormat(filename string) bool {
 	fileNameRegex := regexp.MustCompile(
 		`^host_` +
